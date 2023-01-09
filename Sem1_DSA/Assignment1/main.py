@@ -97,6 +97,104 @@ class SortedLinkedList:
 
 sSortedLinkedListObj = SortedLinkedList()
 
+#BST
+class BSTNode:
+    #Each node in BST should have Value, Left & Right
+    def __init__(self, val=None):
+        self.left = None
+        self.right = None
+        self.val = val
+
+    def insert(self, val):
+        if not self.val: #Initial case when BST is empty / not defined
+            self.val = val 
+            return
+
+        if self.val == val: #Case for duplicates
+            return
+
+        if val < self.val: #When value is lesser, insert to left sub tree
+            if self.left:
+                self.left.insert(val)
+                return
+            self.left = BSTNode(val)
+            return
+
+        if self.right: #When value is higher, insert to right sub tree
+            self.right.insert(val)
+            return
+        self.right = BSTNode(val)
+
+    def delete(self, val):
+        if not self.val: #When BST is not defined
+            return
+
+        if val < self.val: #Find if present in left sub tree
+            if self.left:
+                self.left = self.left.delete(val)
+            return self
+        if val > self.val: #Find if present in right sub tree
+            if self.right:
+                self.right = self.right.delete(val)
+            return self
+        #Reorder values after deletion
+        if self.right == None:
+            return self.left
+        if self.left == None:
+            return self.right
+        min_larger_node = self.right
+        while min_larger_node.left:
+            min_larger_node = min_larger_node.left
+        self.val = min_larger_node.val
+        self.right = self.right.delete(min_larger_node.val)
+        return self
+
+    def exists(self, val):
+        #Initial case when BST is empty
+        if not self.val:
+            return False
+    
+        if val == self.val: #Found
+            return True
+
+        if val < self.val: #Find in left sub tree
+            if self.left == None:
+                return False
+            return self.left.exists(val)
+
+        if self.right == None: #Find in right sub tree
+            return False
+        return self.right.exists(val)
+
+    def preorder(self, vals):
+        if self.val is not None:
+            vals.append(self.val) #self
+        if self.left is not None:
+            self.left.preorder(vals) #left
+        if self.right is not None:
+            self.right.preorder(vals) #right
+        return vals
+
+    def inorder(self, vals):
+        if self.left is not None:
+            self.left.inorder(vals) #left
+        if self.val is not None:
+            vals.append(self.val) #self
+        if self.right is not None:
+            self.right.inorder(vals) #right
+        return vals
+    
+    def postorder(self, vals):
+        if self.left is not None:
+            self.left.postorder(vals) #left
+        if self.right is not None:
+            self.right.postorder(vals) #right
+        if self.val is not None:
+            vals.append(self.val) #self
+        return vals
+
+BSTObj = BSTNode()    
+
 def inputIntoSortedLinkedListFromFile():
     while True:
         print("Current menu selected is 7 i.e, Input into Sorted List from File")
@@ -186,6 +284,116 @@ def removeElementFromSortedLinkedList():
                 sSortedLinkedListObj.remove(text)
                 sSortedLinkedListObj.display()
 
+def inputIntoBSTFromFile():
+    while True:
+        print("Current menu selected is 11 i.e, Input into BST from File")
+        print("Enter file name to proceed or back to go to main menu:")
+        text = input()
+        # If input is back go back to main menu
+        if "back" in text:
+            break
+        # Else if input file exist then process
+        elif file_exists(text):
+            fileObj = open(text, "r")
+            for currentLine in fileObj:
+                splits = currentLine.split(',')
+                for split in splits:
+                    flag = True
+                    try:
+                        split = int(split.strip()) # strip all right and left space
+                    except ValueError:
+                        flag = False # ignore all alphabets, decimals, special characters
+                    if flag:
+                        BSTObj.insert(split)
+            fileObj.close()
+            print("BST 'pre-order:'")
+            print(BSTObj.preorder([]))
+        # Else throw error
+        else:
+            print("File does not exist or invalid input")
+
+def inputIntoBSTFromCmdLine():
+    while True:
+        print("Current menu selected is 12 i.e, Input into BST from command line")
+        print("Enter a single integer or comma separated integers to proceed or back to go to main menu:")
+        text = input()
+        # If input is back go back to main menu
+        if "back" in text:
+            break
+        # Else process the input
+        else:
+            splits = text.split(',')
+            for split in splits:
+                flag = True
+                try:
+                    split = int(split.strip()) # strip all right and left space
+                except ValueError:
+                    flag = False # ignore all alphabets, decimals, special characters
+                if flag:
+                    BSTObj.insert(split)
+                print("BST 'post-order:'")
+                print(BSTObj.postorder([]))
+
+def findElementInBST():
+    while True:
+        print("Current menu selected is 13 i.e, Find element in BST")
+        print("Enter a single integer to search or back to go to main menu:")
+        text = input()
+        # If input is back go back to main menu
+        if "back" in text:
+            break
+        # Else process the input
+        else:
+            flag = True
+            try:
+                text = int(text.strip()) # strip all right and left space
+            except ValueError:
+                print("Invalid choice")
+                flag = False # ignore all alphabets, decimals, special characters
+            if flag:
+                print("Key", text, "found") if True == BSTObj.exists(text) else print("Key", text, "not found")
+
+def removeElementFromBST():
+    while True:
+        print("Current menu selected is 14 i.e, Remove element in BST")
+        print("Enter a single integer to remove or back to go to main menu:")
+        text = input()
+        # If input is back go back to main menu
+        if "back" in text:
+            break
+        # Else process the input
+        else:
+            flag = True
+            try:
+                text = int(text.strip()) # strip all right and left space
+            except ValueError:
+                print("Invalid choice")
+                flag = False # ignore all alphabets, decimals, special characters
+            if flag:
+                BSTObj.delete(text)
+                print(BSTObj.inorder([]))
+
+def printBSTInorder():
+    while True:
+        print("Current menu selected is 15 i.e, Print BST in order")
+        # print(BSTObj.inorder([]))
+        print("Enter 0 to print the BST in order or back to go to main menu:")
+        text = input()
+        # If input is back go back to main menu
+        if "back" in text:
+            break
+        # Else process the input
+        else:
+            flag = True
+            try:
+                text = int(text.strip()) # strip all right and left space
+            except ValueError:
+                print("Invalid choice")
+                flag = False # ignore all alphabets, decimals, special characters
+            if flag:
+                if text == 0:
+                    print(BSTObj.inorder([]))
+
 # infinite while loop
 while True:
     print("Choose a +ve integer from below menu items :-")
@@ -236,15 +444,15 @@ while True:
     elif (10 == choice):
         removeElementFromSortedLinkedList()
     elif (11 == choice):
-        print("Selected 11")
+        inputIntoBSTFromFile() 
     elif (12 == choice):
-        print("Selected 12")
+        inputIntoBSTFromCmdLine()
     elif (13 == choice):
-        print("Selected 13")
+        findElementInBST()
     elif (14 == choice):
-        print("Selected 14")
+        removeElementFromBST()
     elif (15 == choice):
-        print("Selected 15")
+        printBSTInorder()
     elif (16 == choice):
         print("Thank you!")
         break
