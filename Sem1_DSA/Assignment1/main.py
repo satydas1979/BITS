@@ -203,10 +203,16 @@ class Queue:
 		self.queue = []
 		self.front = self.rear = 0
 
-	# Function to insert an element
-	# at the rear of the queue
+	# Function to delete an element
+	# from the front of the queue
 	def queueEnqueue(self, data):
 
+		# If queue is empty
+		if(data in self.queue):
+			return
+
+		# Push the element into the list
+		else:
 			self.queue.append(data)
 			self.rear += 1
 
@@ -411,8 +417,11 @@ def removeElementFromBST():
                 print("Invalid choice")
                 flag = False # ignore all alphabets, decimals, special characters
             if flag:
-                BSTObj.delete(text)
-                print(BSTObj.inorder([]))
+                if BSTObj.exists(text):
+                    BSTObj.delete(text)
+                    print(BSTObj.inorder([]))
+                else:
+                    print("Key", text, "not found")
 
 def printBSTInorder():
     while True:
