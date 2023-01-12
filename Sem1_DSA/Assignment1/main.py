@@ -195,6 +195,47 @@ class BSTNode:
 
 BSTObj = BSTNode()    
 
+class Queue:
+
+	# To initialize the object.
+	def __init__(self):
+
+		self.queue = []
+		self.front = self.rear = 0
+
+	# Function to insert an element
+	# at the rear of the queue
+	def queueEnqueue(self, data):
+
+			self.queue.append(data)
+			self.rear += 1
+
+	# Function to delete an element
+	# from the front of the queue
+	def queueDequeue(self):
+
+		# If queue is empty
+		if(self.front == self.rear):
+			print("Queue is empty")
+
+		# Pop the front element from list
+		else:
+			x = self.queue.pop(0)
+			self.rear -= 1
+
+	# Function to print queue elements
+	def queueDisplay(self):
+
+		if(self.front == self.rear):
+			print("\nQueue is Empty")
+
+		# Traverse front to rear to
+		# print elements
+		for i in self.queue:
+			print(i, "<--", end='')
+
+qObj= Queue()
+
 def inputIntoSortedLinkedListFromFile():
     while True:
         print("Current menu selected is 7 i.e, Input into Sorted List from File")
@@ -394,6 +435,64 @@ def printBSTInorder():
                 if text == 0:
                     print(BSTObj.inorder([]))
 
+def inputIntoArrayFromFile():
+    while True:
+        print("Current menu selected is 1 i.e, Input into Queue from File")
+        print("Enter file name to proceed or back to go to main menu:")
+        text = input()
+        # If input is back go back to main menu
+        if "back" in text:
+            break
+        # Else if input file exist then process
+        elif file_exists(text):
+            fileObj = open(text, "r")
+            for currentLine in fileObj:
+                splits = currentLine.split(',')
+                for split in splits:
+                    flag = True
+                    try:
+                        split = int(split.strip()) # strip all right and left space
+                    except ValueError:
+                        flag = False # ignore all alphabets, decimals, special characters
+                    if flag:
+                        qObj.queueEnqueue(split)
+            fileObj.close()
+            qObj.queueDisplay()
+            print("\n")
+       # Else throw error
+        else:
+            print("File does not exist or invalid input")
+
+def inputIntoArrayQueueFromCmdLine():
+    while True:
+        print("Current menu selected is 2 i.e, Input into Array queue from command line")
+        print("Enter a single integer or comma separated integers to proceed or back to go to main menu:")
+        text = input()
+        # If input is back go back to main menu
+        if "back" in text:
+            break
+        # Else process the input
+        else:
+            splits = text.split(',')
+            for split in splits:
+                flag = True
+                try:
+                    split = int(split.strip()) # strip all right and left space
+                except ValueError:
+                    flag = False # ignore all alphabets, decimals, special characters
+                if flag:
+                    qObj.queueEnqueue(split)
+
+            qObj.queueDisplay()
+            print("\n")
+
+
+def removeElementFromArrayQueue():
+    print("Current menu selected is 3 i.e, Remove element in Queue")
+    qObj.queueDequeue()
+    qObj.queueDisplay()
+    print("\n")
+
 # infinite while loop
 while True:
     print("Choose a +ve integer from below menu items :-")
@@ -424,11 +523,11 @@ while True:
     choice = int(choice)
 
     if (1 == choice):
-        print("Selected 1")
+        inputIntoArrayFromFile()
     elif (2 == choice):
-        print("Selected 2")
+        inputIntoArrayQueueFromCmdLine()
     elif (3 == choice):
-        print("Selected 3")
+        removeElementFromArrayQueue()
     elif (4 == choice):
         print("Selected 4")
     elif (5 == choice):
